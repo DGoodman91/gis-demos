@@ -54,8 +54,10 @@
     <div id='console'>
         <h1>CO2 Emissions Per Year</h1>
         <p>Data: TODO - ADD DATA SOURCE NOTES!</p>
-        <button onclick="loadDataForYear(2000)">2000</button>
-        <button onclick="loadDataForYear(2014)">2014</button>
+        <div class='session' id='sliderbar'>
+            <h2>Year: <label id='active-year'>2014</label></h2>
+            <input id='slider' class='row' type='range' min='1900' max='2014' step='1' value='2014' />
+        </div>
     </div>
 
     <script>
@@ -72,6 +74,16 @@
             loadInitialData();
         });
 
+        // TODO need to add a buffer, as dragging long distance queues a large number of redraws
+        document.getElementById('slider').addEventListener('input', (event) => {
+            const year = parseInt(event.target.value);
+            // update the map
+            loadDataForYear(year);
+
+            // update text in the UI
+            document.getElementById('active-year').innerText = year;
+        });
+
         function loadDataForYear(year) {
             const style = map.getStyle();
             style.layers.find(({ id }) => id === "emissions").paint['fill-color']['property'] = 'total_' + year;
@@ -84,7 +96,7 @@
                 type: 'fill',
                 source: {
                     type: 'geojson',
-                    data: './data.json'
+                    data: './data.geojson'
                 },
                 paint: {
                     'fill-color': {
@@ -94,7 +106,8 @@
                         stops: [
                             [3, "hsl(114, 66%, 53%)"],
                             [2806634, "hsl(0, 64%, 51%)"]
-                        ]
+                        ],
+                        default: "hsl(0, 0%, 100%)"
                     },
                     'fill-opacity': 1
                 }
