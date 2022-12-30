@@ -1,0 +1,109 @@
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>CO2 Emissions By Year</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        h2 {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2dc4b2;
+        }
+
+        #console {
+            position: absolute;
+            width: 240px;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: white;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id='map'></div>
+    <div id='console'>
+        <h1>CO2 Emissions Per Year</h1>
+        <p>Data: TODO - ADD DATA SOURCE NOTES!</p>
+        <button onclick="loadDataForYear(2000)">2000</button>
+        <button onclick="loadDataForYear(2014)">2014</button>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZ29vZG1hbmRldiIsImEiOiJjbGFmdnNiNXExOHA1M29taDR2Y2dqcmZqIn0.4FBCmRzmX-cZllfG-ycu3A';
+
+        const map = new mapboxgl.Map({
+            container: 'map', // container element id
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [0, 0], // initial map center in [lon, lat]
+            zoom: 2
+        });
+
+        map.on('load', () => {
+            loadInitialData();
+        });
+
+        function loadDataForYear(year) {
+            const style = map.getStyle();
+            style.layers.find(({ id }) => id === "emissions").paint['fill-color']['property'] = 'total_' + year;
+            map.setStyle(style);
+        }
+
+        function loadInitialData() {
+            map.addLayer({
+                id: 'emissions',
+                type: 'fill',
+                source: {
+                    type: 'geojson',
+                    data: './data.json'
+                },
+                paint: {
+                    'fill-color': {
+                        property: 'total_2014',
+                        type: 'exponential',
+                        base: 0.99999,
+                        stops: [
+                            [3, "hsl(114, 66%, 53%)"],
+                            [2806634, "hsl(0, 64%, 51%)"]
+                        ]
+                    },
+                    'fill-opacity': 1
+                }
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>
