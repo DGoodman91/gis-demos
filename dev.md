@@ -1,0 +1,3 @@
+- design page layout
+- data needs processing to fix missing countries
+    - decisions needed about now to handle certain countries

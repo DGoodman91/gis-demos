@@ -17,19 +17,14 @@
         #map {
             position: absolute;
             top: 0;
-            bottom: 0;
+            bottom: 10%;
+            height: 90%;
             width: 100%;
         }
 
-        h1 {
-            font-size: 20px;
-            line-height: 30px;
-        }
-
         h2 {
-            font-size: 14px;
-            line-height: 20px;
-            margin-bottom: 10px;
+            font-size: 20px;
+            margin-bottom: 5px;
         }
 
         a {
@@ -37,12 +32,24 @@
             color: #2dc4b2;
         }
 
+        .row {
+            height: 12px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
         #console {
             position: absolute;
-            width: 240px;
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: white;
+            bottom: 0;
+            width: 90%;
+            padding-left: 5%;
+            padding-right: 5%;
+            text-align: center;
+        }
+
+        /* TODO remove the mapbox logo - is this allowed by mapbox TOS? */
+        .mapboxgl-ctrl-logo {
+            display: none !important;
         }
     </style>
 
@@ -52,25 +59,36 @@
 
     <div id='map'></div>
     <div id='console'>
-        <h1>CO2 Emissions Per Year</h1>
-        <p>Data: TODO - ADD DATA SOURCE NOTES!</p>
         <div class='session' id='sliderbar'>
             <h2>Year: <label id='active-year'>2014</label></h2>
-            <input id='slider' class='row' type='range' min='1900' max='2014' step='1' value='2014' />
+            <input id='slider' class='row' type='range' min='1914' max='2014' step='5' value='2014' />
         </div>
     </div>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiZ29vZG1hbmRldiIsImEiOiJjbGFmdnNiNXExOHA1M29taDR2Y2dqcmZqIn0.4FBCmRzmX-cZllfG-ycu3A';
 
+        // TODO we've disabled attribution, should add credit elsewhere
+        // https://stackoverflow.com/questions/30320079/how-to-remove-mapbox-logo-from-bottom-left-corner
         const map = new mapboxgl.Map({
             container: 'map', // container element id
             style: 'mapbox://styles/mapbox/light-v11',
             center: [0, 0], // initial map center in [lon, lat]
-            zoom: 2
+            zoom: 2,
+            attributionControl: false
         });
 
         map.on('load', () => {
+
+            // TODO
+            // remove all layers fom the map besides the continent and country layers
+            // there's no need for any other layers since it's not relevant to our data
+            map.getStyle().layers.forEach(function (element, index, array) {
+                if (element.id != 'country-label' && element.id != 'continent-label') {
+                    map.removeLayer(element.id);
+                }
+            });
+
             loadInitialData();
         });
 
