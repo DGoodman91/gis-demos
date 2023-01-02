@@ -157,11 +157,22 @@ update countries set admin = 'St. Vincent & the Grenadines' where admin = 'Saint
 update countries set admin = 'Republic of Cameroon' where admin = 'Cameroon';
 update countries set admin = 'Republic of Moldova' where admin = 'Moldova';
 update countries set admin = 'Republic of South Sudan' where admin = 'South Sudan';
+```
 
+```sql
 -- TODO loads left, but let's get some stuff built first then return to tidy up the data!
 -- Lots of questions, like how to handle countries that used to be different (e.g., korea, vietnam)
-update countries set admin = '' where admin = '';
+update co2_emissions_by_country set country = 'FRANCE' where country = 'FRANCE (INCLUDING MONACO)';
 ```
+
+02/01/2023 Data Cleaning Work
+- ISSUE: countries table has france and monaco as two separate entities. co2 emissions data has them as a single 'France (Including Monaco)' state.
+  RESOLUTION: Update emissions data to just say 'France', and note that it includes monaco in data notes
+  ```sql
+  update co2_emissions_by_country set country = ""
+  ```
+
+
 
 
 ## Exporting back to GeoJSON
