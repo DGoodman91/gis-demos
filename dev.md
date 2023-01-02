@@ -1,3 +1,4 @@
 - design page layout
 - data needs processing to fix missing countries
     - decisions needed about now to handle certain countries
+- how to properly scope a publicly readable access token
