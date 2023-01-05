@@ -46,7 +46,6 @@
 "YUGOSLAVIA (MONTENEGRO & SERBIA)"
 "ZANZIBAR"
 
-* Pre-breakup, emission data comes from "USSR" and all the soviet countries merge into it. Need to UNION all their Geometries and add a countries record for it.
 
 * The gap between Western Sahara & Mauritiana is broken :( Google maps makes it look like the space in our gap should be part of Western Sahara
 

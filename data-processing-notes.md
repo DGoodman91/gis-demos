@@ -199,6 +199,12 @@ update co2_emissions_by_country set country = 'FRANCE' where country = 'FRANCE (
   update countries set years_active = 'NOT:0000-1991' where admin in ('Slovakia', 'Czech Republic');
   ```
 
+- ISSUE: Pre-breakup, emission data comes from "USSR" and all the soviet countries merge into it. Need to UNION all their Geometries and add a countries record for it. Countries were: Armenia, Azerbaijan, Belorussia (now Belarus), Estonia, Georgia, Kazakhstan, Kirgiziya (now Kyrgyzstan), Latvia, Lithuania, Moldavia (now Moldova), Russia, Tajikistan, Turkmenistan, Ukraine, and Uzbekistan.
+  RESOLUTION: First, check our data to see which years each of the above countries started getting their own emission data. All except Estonia and Latvia have their data starting in 1992, with those two missing data between 1940-1991. So we can add a USSR country record with years_active range 1940-1991, and set the years_active's of the separate countries to "NOT:1940-1991"
+  ```sql
+  INSERT INTO countries VALUES (-192, 'USSR', 'USSR', (select ST_Multi(ST_Union(geom)) from countries WHERE UPPER(admin) IN ('ARMENIA', 'AZERBAIJAN', 'BELARUS', 'ESTONIA', 'GEORGIA', 'KAZAKHSTAN', 'KYRGYZSTAN', 'LATVIA', 'LITHUANIA', 'REPUBLIC OF MOLDOVA', 'RUSSIAN FEDERATION', 'TAJIKISTAN', 'TURKMENISTAN', 'UKRAINE', 'UZBEKISTAN')), 'IN:1940-1991');
+  UPDATE countries SET years_active = 'NOT:1940-1991' WHERE UPPER(admin) IN ('ARMENIA', 'AZERBAIJAN', 'BELARUS', 'ESTONIA', 'GEORGIA', 'KAZAKHSTAN', 'KYRGYZSTAN', 'LATVIA', 'LITHUANIA', 'REPUBLIC OF MOLDOVA', 'RUSSIAN FEDERATION', 'TAJIKISTAN', 'TURKMENISTAN', 'UKRAINE', 'UZBEKISTAN');
+  ```
 
 - Some just need their names tweaking to match
 ```sql
