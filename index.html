@@ -103,25 +103,26 @@
         });
 
         function loadDataForYear(year) {
+            year = Number(year)
             const style = map.getStyle();
             style.layers.find(({ id }) => id === "emissions").paint['fill-color']['property'] = 'total_' + year;
             map.setStyle(style);
             map.setFilter('emissions', ['any',
 
-                ['==', ['get', 'years_valid'], 'ALL'],
+                ['==', ['get', 'years_active'], 'ALL'],
 
                 ['all',
-                    ['in', 'NOT', ['get', 'years_valid']],
+                    ['in', 'NOT', ['get', 'years_active']],
                     ['any', 
-                        ['<', Number(year), ['to-number', ['slice', ['get', 'years_valid'], 4, 8]]],
-                        ['>', Number(year), ['to-number', ['slice', ['get', 'years_valid'], 9, 13]]]
+                        ['<', year, ['to-number', ['slice', ['get', 'years_active'], 4, 8]]],
+                        ['>', year, ['to-number', ['slice', ['get', 'years_active'], 9, 13]]]
                     ]
                 ],
 
                 ['all',
-                    ['in', 'IN', ['get', 'years_valid']],
-                    ['>', Number(year), ['to-number', ['slice', ['get', 'years_valid'], 3, 7]]],
-                    ['<', Number(year), ['to-number', ['slice', ['get', 'years_valid'], 8, 12]]]
+                    ['in', 'IN', ['get', 'years_active']],
+                    ['>', year, ['to-number', ['slice', ['get', 'years_active'], 3, 7]]],
+                    ['<', year, ['to-number', ['slice', ['get', 'years_active'], 8, 12]]]
                 ]
 
             ]);
@@ -151,20 +152,20 @@
             });
             map.setFilter('emissions', ['any',
 
-                ['==', ['get', 'years_valid'], 'ALL'],
+                ['==', ['get', 'years_active'], 'ALL'],
 
                 ['all',
-                    ['in', 'NOT', ['get', 'years_valid']],
+                    ['in', 'NOT', ['get', 'years_active']],
                     ['any', 
-                        ['<', 2014, ['to-number', ['slice', ['get', 'years_valid'], 4, 8]]],
-                        ['>', 2014, ['to-number', ['slice', ['get', 'years_valid'], 9, 13]]]
+                        ['<', 2014, ['to-number', ['slice', ['get', 'years_active'], 4, 8]]],
+                        ['>', 2014, ['to-number', ['slice', ['get', 'years_active'], 9, 13]]]
                     ]
                 ],
 
                 ['all',
-                    ['in', 'IN', ['get', 'years_valid']],
-                    ['>', 2014, ['to-number', ['slice', ['get', 'years_valid'], 3, 7]]],
-                    ['<', 2014, ['to-number', ['slice', ['get', 'years_valid'], 8, 12]]]
+                    ['in', 'IN', ['get', 'years_active']],
+                    ['>', 2014, ['to-number', ['slice', ['get', 'years_active'], 3, 7]]],
+                    ['<', 2014, ['to-number', ['slice', ['get', 'years_active'], 8, 12]]]
                 ]
 
             ]);

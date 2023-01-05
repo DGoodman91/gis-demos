@@ -80,6 +80,7 @@ create index admin1_geom_idx on admin1 using GIST(geom);
 
 We run a quick sanity check on our data so far - let's check to see that all of the UK's admin boundaries lie within in the country boundary.
 
+
 ```sql
 -- returns 232 records
 select * from admin1 where country = 'United Kingdom';
@@ -93,6 +94,16 @@ select * from admin1 where ST_Intersects((select geom from countries where admin
 ```
 
 So not perfect, but it'll do for now.
+
+## Handling country splits/unions
+
+Where countries have merged and/or split over time (e.g., Vietnam, Germany, Czech Republic/Slovakia) we can't have Features with overlapping geometries. We'll need to add a Years Active field to our country data and use it in a filter on our application's map. The field will contain one of three structures, see the expression used in the code for it's usage. "ALL" indicates the country exists for all years, "NOT:1945-1990" indicates the country exists for all years except those in the (inclusive) range specified, and "IN:1945-1990" indicates the country exists in all years withing the (inclusive) range. We'll use the years 0000 & 9999 as bookends.
+
+```sql
+alter table countries add column years_active varchar(32);
+-- to start with, set them all to ALL and we'll update special cases when we prep & clean our data
+update countries set years_active = 'ALL';
+```
 
 ## Add CO2 Emission data to our countries table
 
@@ -166,12 +177,38 @@ update co2_emissions_by_country set country = 'FRANCE' where country = 'FRANCE (
 ```
 
 02/01/2023 Data Cleaning Work
+
 - ISSUE: countries table has france and monaco as two separate entities. co2 emissions data has them as a single 'France (Including Monaco)' state.
-  RESOLUTION: Update emissions data to just say 'France', and note that it includes monaco in data notes
+  RESOLUTION: union the geometries of france and monaco to make a new row that matches the emissions data. We'll insert new country record with negative ogc id
   ```sql
-  update co2_emissions_by_country set country = ""
+  insert into countries values (-78, 'France (including Monaco)', 'FRA_MCO', (select ST_Union(geom) from countries where admin ilike '%france%' or admin ilike '%monaco%'))
   ```
 
+- ISSUE: countries table has italy and san marino as two separate entities. co2 emissions data has them as a single 'Italy (Including San Marino)' state.
+  RESOLUTION: union the geometries of italy and san marino to make a new row that matches the emissions data. We'll insert new country record with negative ogc ids
+  ```sql
+  insert into countries values (-113, 'Italy (Including San Marino)', 'ITA_SMR', (select ST_Union(geom) from countries where admin ilike '%italy%' or admin ilike '%marino%'))
+  ```
+
+- ISSUE: Pre-split, emission data comes from "CZECHOSLOVAKIA".
+  RESOLUTION: Need to UNION Czechnia and Slovakia's borders and add a countries record for it
+  ```sql
+  -- also need to use st_multi to cast the resulting POLYGON to a MULTIPOLYGON
+  insert into countries values (-61, 'Czechoslovakia', 'CZE_SVK', (select ST_Multi(ST_Union(geom)) from countries where admin ilike '%Czech Republic%' or admin ilike '%slovakia%'), 'IN:0000-1991');
+  -- finally, update the years_active field on the existing records
+  update countries set years_active = 'NOT:0000-1991' where admin in ('Slovakia', 'Czech Republic');
+  ```
+
+
+- Some just need their names tweaking to match
+```sql
+update countries set admin = 'Russian Federation' where admin = 'Russia';
+update countries set admin = 'Republic of Sudan' where admin = 'Sudan';
+update co2_emissions_by_country set country = 'REPUBLIC OF SERBIA' where country = 'SERBIA'
+update co2_emissions_by_country set country = 'IVORY COAST' where country = 'COTE D IVOIRE'
+update co2_emissions_by_country set country = 'DEMOCRATIC REPUBLIC OF THE CONGO' where country = 'DEMOCRATIC REPUBLIC OF THE CONGO (FORMERLY ZAIRE)'
+update co2_emissions_by_country set country = 'REPUBLIC OF CONGO' where country = 'CONGO'
+```
 
 
 
@@ -192,25 +229,14 @@ We've got some different ways we can build our co2-emissions-by-year map.
 * On year-selection-change, remove the current layer and create a new one based on a server call to retrieve that year's data set
 * Have a single layer with data properties for every year, then have the layer's fill expression contain a 'selected year' variable
 
-To start playing around, we'll make a single cloropleth layer with our data, picking 2014 as a sample year. Start by exporting our data to GeoJSON
+After experimenting with the functionality available in the Mapbox API and comparing performance, the best option seems to have a single data source with a separate property for each year. We can then programatically update the map's style to switch the property used for the fill colour.
+
+The following command, with the query specified in options.opt to work around the Windows command length limit, exports our data in geojson format.
 
 ```shell
-& 'C:\Program Files\QGIS 3.22.10\bin\ogr2ogr.exe' -f GeoJSON co2-2014.json "PG:host=localhost port=5433 dbname=gis user=postgres password=postgres" --optfile .\options.opt
+& 'C:\Program Files\QGIS 3.22.10\bin\ogr2ogr.exe' -f GeoJSON co2.json "PG:host=localhost port=5433 dbname=gis user=postgres password=postgres" --optfile .\options.opt
 ```
-
-See the options.opt file for the full query (all years)
-
 
 # Thoughts on the data...
 
 For a cloropleth, would co2 per area make more sense, or co2 per head maybe?
-
-
-select y2014.year, y2014.total as total_2014,
-y2011.total as total_2011, 
-y2012.total as total_2012,
-y2013.total as total_2013
-from (select * from co2_emissions_by_country where year = '2014') as y2014
-left join (select * from co2_emissions_by_country where year = '2011') as y2011 on y2014.country = y2011.country
-left join (select * from co2_emissions_by_country where year = '2012') as y2012 on y2014.country = y2012.country
-left join (select * from co2_emissions_by_country where year = '2013') as y2013 on y2014.country = y2013.country

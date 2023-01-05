@@ -2,3 +2,5 @@
 - data needs processing to fix missing countries
     - decisions needed about now to handle certain countries
 - how to properly scope a publicly readable access token
+- port into angular app
+- swap out the mapbox gl country names for our own (e.g. france inc. monaco)
