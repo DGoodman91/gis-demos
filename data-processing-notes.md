@@ -206,14 +206,29 @@ update co2_emissions_by_country set country = 'FRANCE' where country = 'FRANCE (
   UPDATE countries SET years_active = 'NOT:1940-1991' WHERE UPPER(admin) IN ('ARMENIA', 'AZERBAIJAN', 'BELARUS', 'ESTONIA', 'GEORGIA', 'KAZAKHSTAN', 'KYRGYZSTAN', 'LATVIA', 'LITHUANIA', 'REPUBLIC OF MOLDOVA', 'RUSSIAN FEDERATION', 'TAJIKISTAN', 'TURKMENISTAN', 'UKRAINE', 'UZBEKISTAN');
   ```
 
+  - ISSUE: Pre-1945, North & South Korea are united
+  - RESOLUTION: Same as for the cases of Czechoslovakia and the USSR
+    ```sql
+    -- first tidy the name
+    update co2_emissions_by_country set country = 'DEMOCRATIC PEOPLE''S REPUBLIC OF KOREA' where country = 'DEMOCRATIC PEOPLE S REPUBLIC OF KOREA';
+    -- update the north & south country records to match
+    update countries set admin = 'Democratic People''s Republic of Korea' where admin = 'North Korea';
+    update countries set admin = 'Republic of Korea' where admin = 'South Korea';
+    -- set years-active and insert new record
+    update countries set years_active = 'IN:1945-9999' where admin ilike '%korea%';
+    insert into countries values (-126, 'Korea', 'UKOR', (select ST_Multi(ST_Union(geom)) from countries where admin ilike '%korea'), 'IN:0000-1944');
+    ```
+
 - Some just need their names tweaking to match
 ```sql
 update countries set admin = 'Russian Federation' where admin = 'Russia';
 update countries set admin = 'Republic of Sudan' where admin = 'Sudan';
-update co2_emissions_by_country set country = 'REPUBLIC OF SERBIA' where country = 'SERBIA'
-update co2_emissions_by_country set country = 'IVORY COAST' where country = 'COTE D IVOIRE'
-update co2_emissions_by_country set country = 'DEMOCRATIC REPUBLIC OF THE CONGO' where country = 'DEMOCRATIC REPUBLIC OF THE CONGO (FORMERLY ZAIRE)'
-update co2_emissions_by_country set country = 'REPUBLIC OF CONGO' where country = 'CONGO'
+update co2_emissions_by_country set country = 'REPUBLIC OF SERBIA' where country = 'SERBIA';
+update co2_emissions_by_country set country = 'IVORY COAST' where country = 'COTE D IVOIRE';
+update co2_emissions_by_country set country = 'DEMOCRATIC REPUBLIC OF THE CONGO' where country = 'DEMOCRATIC REPUBLIC OF THE CONGO (FORMERLY ZAIRE)';
+update co2_emissions_by_country set country = 'REPUBLIC OF CONGO' where country = 'CONGO';
+UPDATE co2_emissions_by_country SET country = 'VIETNAM' WHERE country = 'VIET NAM';
+UPDATE countries SET admin = 'Myanmar (formerly Burma)' WHERE admin = 'Myanmar';
 ```
 
 
