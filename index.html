@@ -121,8 +121,8 @@
 
                 ['all',
                     ['in', 'IN', ['get', 'years_active']],
-                    ['>', year, ['to-number', ['slice', ['get', 'years_active'], 3, 7]]],
-                    ['<', year, ['to-number', ['slice', ['get', 'years_active'], 8, 12]]]
+                    ['>=', year, ['to-number', ['slice', ['get', 'years_active'], 3, 7]]],
+                    ['<=', year, ['to-number', ['slice', ['get', 'years_active'], 8, 12]]]
                 ]
 
             ]);
