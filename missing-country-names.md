@@ -20,7 +20,6 @@
 "KUWAITI OIL FIRES"
 "LEEWARD ISLANDS"
 "MARTINIQUE"
-"MYANMAR (FORMERLY BURMA)"
 "NETHERLAND ANTILLES"
 "NETHERLAND ANTILLES AND ARUBA"
 "OCCUPIED PALESTINIAN TERRITORY"
@@ -40,16 +39,15 @@
 "ST. KITTS-NEVIS-ANGUILLA"
 "TANGANYIKA"
 "UNITED KOREA"
-"VIET NAM"
 "WALLIS AND FUTUNA ISLANDS"
-"YUGOSLAVIA (FORMER SOCIALIST FEDERAL REPUBLIC)"
-"YUGOSLAVIA (MONTENEGRO & SERBIA)"
 "ZANZIBAR"
 
 
 * The gap between Western Sahara & Mauritiana is broken :( Google maps makes it look like the space in our gap should be part of Western Sahara
 
 * What is the hole in kazakhstan
+
+* Somalia is missing a chunk..
 
 * ISSUE: pre-unification, emission data is split between "FEDERAL REPUBLIC OF GERMANY" and "FORMER GERMAN DEMOCRATIC REPUBLIC". Need the boundary geometry for them.
   RESOLUTION: obtain the boundary data from somewhere??? :(
@@ -64,3 +62,7 @@
 * Pre-split, emission data comes from "CZECHOSLOVAKIA". Need to UNION Czechnia and Slovakia's borders and add a countries record for it
 
 * We have no emissions data for kosovo. Is it being included in Serbia?
+
+- ISSUE: Yugoslavia breakup, similar to the USSR.
+- RESOLUTION: Create union country records with appropriate years_active fields
+              The co2 emission data has records for "Yugoslavia (Former Socialist Federal Republic)" from 1880 until 1991, but Yugoslavia didn't exist until the end of the First World War, so this needs clearing up.
