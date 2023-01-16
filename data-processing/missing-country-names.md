@@ -49,6 +49,8 @@
 
 * Somalia is missing a chunk..
 
+* Small gap between Pakistan and China
+
 * ISSUE: pre-unification, emission data is split between "FEDERAL REPUBLIC OF GERMANY" and "FORMER GERMAN DEMOCRATIC REPUBLIC". Need the boundary geometry for them.
   RESOLUTION: obtain the boundary data from somewhere??? :(
                                               https://censusmosaic.demog.berkeley.edu/data/historical-gis-files ???
