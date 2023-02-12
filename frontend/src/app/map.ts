@@ -3,5 +3,5 @@ export interface Map {
     name: string;
     previewImgUrl: string;
     previewText: string;
-    dateAdded: Date;
+    dateAdded: string; //Date;
 }

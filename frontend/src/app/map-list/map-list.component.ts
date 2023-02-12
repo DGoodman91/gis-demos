@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { MAPS } from '../maps';
+import { Map } from '../map';
+import { MapService } from '../map.service';
 
 @Component({
   selector: 'app-map-list',
@@ -7,5 +8,16 @@ import { MAPS } from '../maps';
   styleUrls: ['./map-list.component.scss']
 })
 export class MapListComponent {
-  maps = MAPS;
+  maps: Map[] = [];
+
+  constructor(private mapService: MapService) {}
+
+  ngOnInit(): void {
+    this.getMaps();
+  }
+
+  getMaps(): void {
+    this.mapService.getMaps().subscribe(maps => this.maps = maps);
+  }
+
 }

@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'emissions-map'`, () => {
+  it(`should have as title 'gis-demos'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('emissions-map');
+    expect(app.title).toEqual('gis-demos');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('emissions-map app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('gis-demos app is running!');
   });
 });
