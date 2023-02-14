@@ -3,16 +3,19 @@
 <div class="cards">
     <ul class="map-list">
         <li *ngFor="let map of maps">
-
-            <div class="card">
-                <h2>{{map.name}}</h2>
-                <h5>{{map.dateAdded}}</h5>
-                <div class="card-content">
-                    <div class="card-content-piece"><img class="card-img" style="height:200px;" src="{{map.previewImgUrl}}" /></div>
-                    <div class="card-content-piece"><p class="card-text">{{map.previewText}}</p></div>
+            <a routerLink="co2bycountry">
+                <div class="card">
+                    <h2>{{map.name}}</h2>
+                    <h5>{{map.dateAdded}}</h5>
+                    <div class="card-content">
+                        <div class="card-content-piece"><img class="card-img" style="height:200px;"
+                                src="{{map.previewImgUrl}}" /></div>
+                        <div class="card-content-piece">
+                            <p class="card-text">{{map.previewText}}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
+            </a>
         </li>
     </ul>
 </div>
