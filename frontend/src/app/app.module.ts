@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { AboutComponent } from './about/about.component';
 import { Co2bycountryComponent } from './maps/co2bycountry/co2bycountry.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { Co2bycountryComponent } from './maps/co2bycountry/co2bycountry.componen
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

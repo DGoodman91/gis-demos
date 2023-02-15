@@ -11,6 +11,8 @@ export class Co2bycountryComponent {
 
   style = 'mapbox://styles/mapbox/light-v11';
 
+  map: any = null;
+
   constructor() { }
 
   ngOnInit() {
@@ -23,12 +25,71 @@ export class Co2bycountryComponent {
       attributionControl: false
     });
 
-//    map.getStyle().layers.forEach(function (element: { id: string; }, index: any, array: any) {
-//      if (element.id != 'country-label' && element.id != 'continent-label') {
-//        map.removeLayer(element.id);
-//      }
-//    });
+    this.map = map;
 
+    map.on('load', () => {
+
+      // remove all layers fom the map besides the continent and country layers
+      // there's no need for any other layers since it's not relevant to our data
+      map.getStyle().layers.forEach(function (element: { id: string; }, index: any, array: any) {
+        if (element.id != 'country-label' && element.id != 'continent-label') {
+          map.removeLayer(element.id);
+        }
+      });
+
+      this.loadInitialData();
+
+    });
+
+  }
+
+  loadInitialData() {
+    const INITIAL_YEAR = 2014;
+    this.map.addLayer({
+      id: 'emissions',
+      type: 'fill',
+      source: {
+        type: 'geojson',
+        data: './assets/data.geojson'
+      },
+      paint: {
+        'fill-color': {
+          property: 'total_' + INITIAL_YEAR,
+          type: 'exponential',
+          base: 0.99999,
+          stops: [
+            [3, "hsl(114, 66%, 53%)"],
+            [2806634, "hsl(0, 64%, 51%)"]
+          ],
+          default: "hsla(0, 0%, 90%, 1)" // when we have no emission data for a country for a year, display as light grey
+        },
+        'fill-opacity': 1
+      }
+    });
+
+    this.setMapFilter(this.map, INITIAL_YEAR);
+  }
+
+  setMapFilter(map: any, year: number) {
+    map.setFilter('emissions', ['any',
+
+      ['==', ['get', 'years_active'], 'ALL'],
+
+      ['all',
+        ['in', 'NOT', ['get', 'years_active']],
+        ['any',
+          ['<', year, ['to-number', ['slice', ['get', 'years_active'], 4, 8]]],
+          ['>', year, ['to-number', ['slice', ['get', 'years_active'], 9, 13]]]
+        ]
+      ],
+
+      ['all',
+        ['in', 'IN', ['get', 'years_active']],
+        ['>', year, ['to-number', ['slice', ['get', 'years_active'], 3, 7]]],
+        ['<', year, ['to-number', ['slice', ['get', 'years_active'], 8, 12]]]
+      ]
+
+    ]);
   }
 
 }
