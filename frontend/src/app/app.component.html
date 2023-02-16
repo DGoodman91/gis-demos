@@ -4,13 +4,16 @@
 
 <body>
 
-  <nav>
-    <a routerLink="/maps">Maps</a>
-    <a routerLink="/about">About</a>
-  </nav>
-
   <div class="main-content">
     <h1>{{title}}</h1>
+
+    <div class="nav-bar">
+      <ul class="nav-bar-list">
+        <li class="nav-bar-item" routerLink="/maps">Maps</li>
+        <li class="nav-bar-item" routerLink="/about">About</li>
+      </ul>
+    </div>
+
     <div class="left-column">
       <router-outlet></router-outlet>
     </div>

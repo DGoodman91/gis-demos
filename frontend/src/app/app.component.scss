@@ -16,6 +16,28 @@ body {
   padding-left: 20px;
 }
 
+.nav-bar-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.nav-bar-item {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  cursor: default;
+}
+
+.nav-bar-item:hover:not(.active) {
+  background-color: #111;
+}
+
 /* everywhere else */
 * {
   font-family: Arial, Helvetica, sans-serif;

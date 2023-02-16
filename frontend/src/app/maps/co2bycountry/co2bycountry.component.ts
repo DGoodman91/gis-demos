@@ -16,7 +16,7 @@ export class Co2bycountryComponent {
 
   constructor() { }
 
-  @ViewChild('slider')slider: any;
+  //@ViewChild('slider')slider: any;
 
   ngOnInit() {
     const map = new mapboxgl.Map({
