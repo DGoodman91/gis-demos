@@ -1,5 +1,5 @@
 import { environment } from '../../../environments/environment.prod';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 
 @Component({
@@ -12,8 +12,11 @@ export class Co2bycountryComponent {
   style = 'mapbox://styles/mapbox/light-v11';
 
   map: any = null;
+  selectedYear = 2014;
 
   constructor() { }
+
+  @ViewChild('slider')slider: any;
 
   ngOnInit() {
     const map = new mapboxgl.Map({
@@ -69,6 +72,20 @@ export class Co2bycountryComponent {
 
     this.setMapFilter(this.map, INITIAL_YEAR);
   }
+
+  changeYear() {
+    // update the map
+    this.loadDataForYear(this.selectedYear);
+  }
+
+  loadDataForYear(year: number) {
+    year = Number(year)
+    const style = this.map.getStyle();
+    style.layers.find(({ id }: { id: any }) => id === "emissions").paint['fill-color']['property'] = 'total_' + year;
+    this.map.setStyle(style);
+    this.setMapFilter(this.map, year);
+  }
+
 
   setMapFilter(map: any, year: number) {
     map.setFilter('emissions', ['any',

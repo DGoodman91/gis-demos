@@ -1,4 +1,8 @@
+<div class="yearSelector">
+    <div class="selectedYearTxt">Year: {{ selectedYear }}</div>
+    <mat-slider class="slider" [(ngModel)]="selectedYear" #slider (change)="changeYear()" step="5" min="1914" max="2014"
+        ngDefaultControl>
+        <input matSliderThumb>
+    </mat-slider>
+</div>
 <div class="map" id="map"></div>
-<mat-slider>
-    <input matSliderThumb>
-</mat-slider>
