@@ -12,7 +12,7 @@ export class Co2bycountryComponent {
   style = 'mapbox://styles/mapbox/light-v11';
 
   map: any = null;
-  selectedYear = 2014;
+  selectedYear = 2014; // initial year = 2014 - TODO why isn't this setting the slider's initial pos??
 
   constructor() { }
 
